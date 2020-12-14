@@ -6,7 +6,7 @@ from django.contrib import messages
 from account.models import Client
 
 
-# @login_required(login_url='/accounts/login/')
+@login_required(login_url ='login:login_redirect')
 def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
@@ -93,7 +93,7 @@ def minicategory_list(request, minicategory_slug=None):
 #     }
 #     return render(request, 'shop/product/detail.html', context)
 
-
+@login_required(login_url ='login:login_redirect')
 def product_detail(request, id, slug):
     product = get_object_or_404(Product, id=id, slug=slug, available=True)
     cart_product_form = CartAddProductForm()
@@ -502,7 +502,7 @@ def contact(request):
 def womens(request):
     return render(request, 'shop/product/womens.html')
 
-
+@login_required(login_url ='login:login_redirect')
 def negotiate(request, id, slug):
     product = Product.objects.get(id=id, slug=slug )
     client = Client.objects.get(user=request.user)
