@@ -514,7 +514,7 @@ def negotiate(request, id, slug):
     if client.has_discount:
         if client.no_of_orders < 1:
             product.price = product.price
-            messages.success(request, ('Bmmer eligible for a 0% percent discount based on your purchase history, price after discount is still ' '{}'.format(product.price)))
+            messages.success(request, ('Opps! Bummer eligible for a 0% percent discount based on your purchase history, price after discount is still ' '{}'.format(product.price)))
 
         elif client.no_of_orders < 3:
             
