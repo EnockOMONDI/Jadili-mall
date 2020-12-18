@@ -9,6 +9,10 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+
+
 
 # Import all constants to use throughout our application
 try:
@@ -107,7 +111,7 @@ DATABASES = {
     
     }
 }
-
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
