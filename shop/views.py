@@ -531,10 +531,10 @@ def client_price(request, id, slug):
 
                 elif client.no_of_orders < 3:
                     
-                    messages.success(request, ('Your eligible for a 10% percent discount based on your purchase history price after discount is  ' '{}'.format(price1)))
+                    messages.success(request, (' but based on your purchase history, we can offer a discount of KSH ' '{}'.format(price_discount_1 )))
 
                 elif client.no_of_orders ==3 and client.no_of_orders < 5:
-                    messages.success(request, ('Your eligible for a 25% percent discount based on your purchase history' ))
+                    messages.success(request, (' but based on your purchase history, we can offer a discount of KSH ' '{}'.format(price_discount_2 )))
                 else:
                     messages.success(request,('  but based on your purchase history, we can offer a discount of KSH ' '{}'.format(price_discount_3))) 
         else:
