@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Category, Product, SubCategory, MiniCategory
+from .forms import NegotiateForm
 from cart.forms import CartAddProductForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -502,14 +503,121 @@ def contact(request):
 def womens(request):
     return render(request, 'shop/product/womens.html')
 
-@login_required(login_url ='login:login_redirect')
-def negotiate(request, id, slug):
+
+def client_price(request, id, slug):
     product = Product.objects.get(id=id, slug=slug )
     client = Client.objects.get(user=request.user)
     client_orders = client.no_of_orders
     price1 =float(product.price)-float(product.price) * 0.1
+    price_discount_1 = float(product.price)-float(price1) 
+    price2 =  float(product.price) * 0.25
+    price_discount_2 = float(product.price)-float(price2) 
+    price3 =  float(product.price) * 0.40
+    price_discount_3 = float(product.price)-float(price3)
+    cart_product_form = CartAddProductForm()
+    if request.method == 'POST':
+            # create a form instance and populate it with data from the request:
+        form = NegotiateForm(request.POST)
+            # check whether it's valid:
+        if form.is_valid():
+
+                # process the data in form.cleaned_data as required
+            client_price=form.cleaned_data['client_price']
+            request.session['client_price'] = client_price
+        if client.has_discount:
+                if client.no_of_orders < 1:
+                    product.price = product.price
+                    messages.success(request, ('Opps! Bummer eligible for a 0% percent discount based on your purchase history, price after discount is still ' '{}'.format(product.price)))
+
+                elif client.no_of_orders < 3:
+                    
+                    messages.success(request, ('Your eligible for a 10% percent discount based on your purchase history price after discount is  ' '{}'.format(price1)))
+
+                elif client.no_of_orders ==3 and client.no_of_orders < 5:
+                    messages.success(request, ('Your eligible for a 25% percent discount based on your purchase history' ))
+                else:
+                    messages.success(request,('  but based on your purchase history, we can offer a discount of KSH ' '{}'.format(price_discount_3))) 
+        else:
+                messages.info(
+                    request, ('Unfortunately ou are not eligible for any loan!'))
+        return render(request, 'shop/product/client.html',{
+            'form': form,
+            'product': product,
+            'price1':price1,
+            'price2':price2,
+            'price3':price3,
+            'cart_product_form': cart_product_form,
+            'client_orders':client_orders,
+            'client_price':client_price,
+            'local_css_urls': ["css3/easy-responsive-tabs.css",
+                            "css3/material-kit.min1036.css",
+                            "css3/demo.css",
+                            "css3/vertical-nav.css"],
+            'local_js_urls': [ "core/jquery.min.js",
+                           "core/popper.min.js",
+                           "core/bootstrap-material-design.min.js",
+                           "js3/vertical-nav.js",
+                           "js3/material-kit.min1036.js",
+                           "js3/demo.js",
+                           "js3/buttons.js",
+                           "js3/modernizr.js",                         
+                           "js3/bootstrap.min.js",                           
+                           "js3/plugins/moment.min.js ",
+                           "js3/plugins/bootstrap-datetimepicker.js",
+                           "js3/plugins/jquery.flexisel.js",
+                           "js3/plugins/jquery.sharrre.js",
+                           "js3/plugins/nouislider.min.js",
+                           "js3/plugins/bootstrap-selectpicker.js",
+                           "js3/plugins/bootstrap-tagsinput.js",
+                           "js3/plugins/jasny-bootstrap.min.js"],
+            })
+            
+                # ...
+                # redirect to a new URL:
+
+        
+
+        # if a GET (or any other method) we'll create a blank form
+    else:
+        form = NegotiateForm()
+        return render(request, 'shop/product/client.html', {
+        'form': form,
+        'product': product,
+        'local_css_urls': ["css3/easy-responsive-tabs.css",
+                            "css3/material-kit.min1036.css",
+                            "css3/demo.css",
+                            "css3/vertical-nav.css"],
+        'local_js_urls': [ "core/jquery.min.js",
+                           "core/popper.min.js",
+                           "core/bootstrap-material-design.min.js",
+                           "js3/vertical-nav.js",
+                           "js3/material-kit.min1036.js",
+                           "js3/demo.js",
+                           "js3/buttons.js",
+                           "js3/modernizr.js",                         
+                           "js3/bootstrap.min.js",                           
+                           "js3/plugins/moment.min.js ",
+                           "js3/plugins/bootstrap-datetimepicker.js",
+                           "js3/plugins/jquery.flexisel.js",
+                           "js3/plugins/jquery.sharrre.js",
+                           "js3/plugins/nouislider.min.js",
+                           "js3/plugins/bootstrap-selectpicker.js",
+                           "js3/plugins/bootstrap-tagsinput.js",
+                           "js3/plugins/jasny-bootstrap.min.js"],
+            })
+    
+
+@login_required(login_url ='login:login_redirect')
+def negotiate(request, id, slug):
+    client_price=request.session['client_price']
+    product = Product.objects.get(id=id, slug=slug )
+    client = Client.objects.get(user=request.user)
+    client_orders = client.no_of_orders
+    price1 =float(product.price)-float(product.price) * 0.1
+    price_discount_1 = float(product.price)-float(product.price1) 
     price2 =  float(product.price) * 0.25
     price3 =  float(product.price) * 0.40
+    price_discount_3 = float(product.price)-float(product.price3)
     cart_product_form = CartAddProductForm()
     if client.has_discount:
         if client.no_of_orders < 1:
@@ -517,12 +625,15 @@ def negotiate(request, id, slug):
             messages.success(request, ('Opps! Bummer eligible for a 0% percent discount based on your purchase history, price after discount is still ' '{}'.format(product.price)))
 
         elif client.no_of_orders < 3:
-            
-            messages.success(request, ('Your eligible for a 10% percent discount based on your purchase history price after discount is  ' '{}'.format(price1)))
+            product.price=price1
+            messages.success(request, (' hey You are eligible for a 10% percent discount based on your purchase history,   lets deduct   ' '{}'.format(price_discount_1)))
 
         elif client.no_of_orders ==3 and client.no_of_orders < 5:
-            messages.success(request, ('Your eligible for a 25% percent discount based on your purchase history' ))
+            product.price=price2
+            messages.success(request,(' hey You are eligible for a 40% percent discount based on your purchase history,   lets deduct   ' '{}'.format(price_discount_3)))
+        
         else:
+            product.price=price3
             messages.success(
                 request, ('You will be awarded  a 40% percent discount based on your purchase history'))
     else:
@@ -535,6 +646,7 @@ def negotiate(request, id, slug):
     'price3':price3,
     'cart_product_form': cart_product_form,
     'client_orders':client_orders,
+    'client_price':client_price,
     'local_css_urls': ["css3/easy-responsive-tabs.css",
                             "css3/material-kit.min1036.css",
                             "css3/demo.css",

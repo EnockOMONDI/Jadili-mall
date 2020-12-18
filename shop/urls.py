@@ -17,9 +17,11 @@ urlpatterns = [
     url(r'^womens/', views.womens, name='womens'),
     url(r'^decorbeauty/', views.decorbeauty, name='decorbeauty'),
     url(r'^homeaccesories/', views.homeaccesories, name='homeaccesories'),
+    url(r'^negotiate/price/(?P<id>\d+)/(?P<slug>[-\w]+)/$', views.client_price, name='client_price'),
     url(r'^shop/', views.product_list, name='product_list'),
     url(r'^negotiate/(?P<id>\d+)/(?P<slug>[-\w]+)/$',
         views.negotiate, name='negotiate'),
+
    
     url(r'^(?P<category_slug>[-\w]+)/$',
         views.product_list, name='product_list_by_category'),
