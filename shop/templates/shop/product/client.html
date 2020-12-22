@@ -55,7 +55,7 @@
 
                 {% if messages %}
                 {% for message in messages %}
-                <h4 > Hey <strong>{{request.user.first_name }} </strong> your desired price is <strong> {{client_price}} </strong> <br> {{ message }} , <br> this will be deducted once you complete the Order process   </h4>
+                <h4 > Hey <strong>{{request.user.first_name }} </strong> your desired price is <strong> {{client_price}} </strong> <br> {{ message }} , <br></h4>
                 {% endfor %}
                 {% endif %}
             <h2 class="title text-muted"> {{ product.name }}</h2>
@@ -131,19 +131,8 @@
                 </select>
               </div> -->
               <div >
-                    {% if client_price %}
-                    <div>
-              
-     
-                            <form action="{% url "cart:cart_add" product.id %}" method="post">
-                                {% csrf_token %}
-                                {{ cart_product_form }} <br>
-                                <input type="submit" value="Continue Purchase" class="btn btn-primary btn-round ">
-                              
-                              </form>
                    
-                      </div>
-                      {% else %}
+                    
                       <div>
                 <form style="margin:10%;margin-top:0;font-size:15px;"action="." method="post">
                     {% csrf_token %}
@@ -156,7 +145,7 @@
               
               
               </div>
-              {% endif %}
+             
             </div>
   
           </div>

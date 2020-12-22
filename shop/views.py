@@ -507,13 +507,6 @@ def womens(request):
 def client_price(request, id, slug):
     product = Product.objects.get(id=id, slug=slug )
     client = Client.objects.get(user=request.user)
-    client_orders = client.no_of_orders
-    price1 =float(product.price)-float(product.price) * 0.1
-    price_discount_1 = float(product.price)-float(price1) 
-    price2 =  float(product.price) * 0.25
-    price_discount_2 = float(product.price)-float(price2) 
-    price3 =  float(product.price) * 0.40
-    price_discount_3 = float(product.price)-float(price3)
     cart_product_form = CartAddProductForm()
     if request.method == 'POST':
             # create a form instance and populate it with data from the request:
@@ -525,29 +518,89 @@ def client_price(request, id, slug):
             client_price=form.cleaned_data['client_price']
             request.session['client_price'] = client_price
         if client.has_discount:
-                if client.no_of_orders < 1:
-                    product.price = product.price
-                    messages.success(request, ('Sorry! based on your purchase history we cannot give you a discount at the moment, eligible for a 0% percent discount , price is still ' '{}'.format(product.price)))
+                if float(client_price) < product.reject_price:
+                    messages.success(request, ('Sorry! thats offer is so low kindly add amount ' ))
 
-                elif client.no_of_orders < 3:
+                elif float(client_price) < product.lowest_price_offer :
                     
-                    messages.success(request, (' but based on your purchase history, we can offer a discount of KSH ' '{}'.format(price_discount_1 )))
+                    messages.success(request, (' Please add a little amount  '))
 
-                elif client.no_of_orders ==3 and client.no_of_orders < 5:
-                    messages.success(request, (' but based on your purchase history, we can offer a discount of KSH ' '{}'.format(price_discount_2 )))
-                else:
-                    messages.success(request,('  but based on your purchase history, we can offer a discount of KSH ' '{}'.format(price_discount_3))) 
+                elif float(client_price) > product.lowest_price_offer and float(client_price) < product.maximum_price_offer :
+                    messages.success(request, (' please top up a little amount'))
+
+                elif float(client_price) >= product.maximum_price_offer and float(client_price) < product.price :
+                    messages.success(request, (' hey I accept this offer'))
+                    productprice=product.price
+                    request.session['productprice'] = float(client_price)
+                    print(productprice)
+                    return render(request, 'shop/product/clientsuccess.html',{
+                        'form': form,
+                    'product': product,
+                    'cart_product_form': cart_product_form,
+                    'client_price':client_price,
+                    'local_css_urls': ["css3/easy-responsive-tabs.css",
+                                    "css3/material-kit.min1036.css",
+                                    "css3/demo.css",
+                                    "css3/vertical-nav.css"],
+                    'local_js_urls': [ "core/jquery.min.js",
+                                "core/popper.min.js",
+                                "core/bootstrap-material-design.min.js",
+                                "js3/vertical-nav.js",
+                                "js3/material-kit.min1036.js",
+                                "js3/demo.js",
+                                "js3/buttons.js",
+                                "js3/modernizr.js",                         
+                                "js3/bootstrap.min.js",                           
+                                "js3/plugins/moment.min.js ",
+                                "js3/plugins/bootstrap-datetimepicker.js",
+                                "js3/plugins/jquery.flexisel.js",
+                                "js3/plugins/jquery.sharrre.js",
+                                "js3/plugins/nouislider.min.js",
+                                "js3/plugins/bootstrap-selectpicker.js",
+                                "js3/plugins/bootstrap-tagsinput.js",
+                                "js3/plugins/jasny-bootstrap.min.js"],
+                    })
+
+
+                elif float(client_price) >= product.price :
+                    messages.success(request, (' hey I accept this offer, thank you for the TIP'))
+                    productprice=product.price
+                    request.session['productprice'] = float(client_price)
+                    print(productprice)
+                    return render(request, 'shop/product/clientsuccess.html',{
+                    'form': form,
+                    'product': product,
+                    'cart_product_form': cart_product_form,
+                    'client_price':client_price,
+                    'local_css_urls': ["css3/easy-responsive-tabs.css",
+                                    "css3/material-kit.min1036.css",
+                                    "css3/demo.css",
+                                    "css3/vertical-nav.css"],
+                    'local_js_urls': [ "core/jquery.min.js",
+                                "core/popper.min.js",
+                                "core/bootstrap-material-design.min.js",
+                                "js3/vertical-nav.js",
+                                "js3/material-kit.min1036.js",
+                                "js3/demo.js",
+                                "js3/buttons.js",
+                                "js3/modernizr.js",                         
+                                "js3/bootstrap.min.js",                           
+                                "js3/plugins/moment.min.js ",
+                                "js3/plugins/bootstrap-datetimepicker.js",
+                                "js3/plugins/jquery.flexisel.js",
+                                "js3/plugins/jquery.sharrre.js",
+                                "js3/plugins/nouislider.min.js",
+                                "js3/plugins/bootstrap-selectpicker.js",
+                                "js3/plugins/bootstrap-tagsinput.js",
+                                "js3/plugins/jasny-bootstrap.min.js"],
+                    })
         else:
                 messages.info(
                     request, ('Unfortunately ou are not eligible for any loan!'))
         return render(request, 'shop/product/client.html',{
             'form': form,
             'product': product,
-            'price1':price1,
-            'price2':price2,
-            'price3':price3,
             'cart_product_form': cart_product_form,
-            'client_orders':client_orders,
             'client_price':client_price,
             'local_css_urls': ["css3/easy-responsive-tabs.css",
                             "css3/material-kit.min1036.css",
