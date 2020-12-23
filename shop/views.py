@@ -516,7 +516,7 @@ def client_price(request, id, slug):
 
                 # process the data in form.cleaned_data as required
             client_price=form.cleaned_data['client_price']
-            request.session['client_price'] = client_price
+            request.session['client_price'] = request.POST['client_price']
         if client.has_discount:
                 if float(client_price) < product.reject_price:
                     messages.success(request, ('Sorry! thats offer is so low kindly add amount ' ))
