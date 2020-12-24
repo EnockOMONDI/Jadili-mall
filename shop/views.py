@@ -506,6 +506,7 @@ def womens(request):
 
 def client_price(request, id, slug):
     product = Product.objects.get(id=id, slug=slug )
+    request.session['intial_product_price']=str(product.price)
     client = Client.objects.get(user=request.user)
     cart_product_form = CartAddProductForm()
     if request.method == 'POST':
@@ -568,8 +569,10 @@ def client_price(request, id, slug):
 
                 elif float(client_price) >= product.price :
                     messages.success(request, (' hey I accept this offer, thank you for the TIP'))
+                    request.session['product_id']=product.id
                     product.price= float(client_price)
                     request.session['product.price']=product.price
+                    request.session.modified=True
                     print("I love {}.".format(product.price))
                     return render(request, 'shop/product/clientsuccess.html',{
                     'form': form,

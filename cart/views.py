@@ -8,6 +8,7 @@ from .forms import CartAddProductForm
 @require_POST
 def cart_add(request, product_id):
     cart = Cart(request)
+    product_id=request.session.get('product_id')
     product =Product.objects.get(id=product_id)
     product.price = request.session.get('product.price')
     product.save()
