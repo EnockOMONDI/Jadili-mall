@@ -80,6 +80,7 @@ class Product(models.Model):
     lowest_price_offer = models.DecimalField(max_digits=10, decimal_places=2)
     maximum_price_offer = models.DecimalField(max_digits=10, decimal_places=2)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    new_price=models.DecimalField(max_digits=10, decimal_places=2)
     available = models.BooleanField(default=True)
     stock = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -92,6 +93,12 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    @property
+    def new_price(self,request):
+    	self.session=request.session
+    	price=self.session.get('self.price')
+    	return price 
+    	
 
     def get_absolute_url(self):
         return reverse('shop:product_detail', args=[self.id, self.slug])

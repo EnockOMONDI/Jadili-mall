@@ -530,9 +530,13 @@ def client_price(request, id, slug):
 
                 elif float(client_price) >= product.maximum_price_offer and float(client_price) < product.price :
                     messages.success(request, (' hey I accept this offer'))
-                    productprice=product.price
-                    request.session['productprice'] = float(client_price)
-                    print(productprice)
+                    request.session['product_id']=product.id
+                    product.price = float(client_price)
+                    print(product.price)
+                    request.session['product.price']=product.price
+                    request.session.modified=True
+                    print(product.price)
+                    print("I love {}.".format(product.price))
                     return render(request, 'shop/product/clientsuccess.html',{
                         'form': form,
                     'product': product,
@@ -564,9 +568,9 @@ def client_price(request, id, slug):
 
                 elif float(client_price) >= product.price :
                     messages.success(request, (' hey I accept this offer, thank you for the TIP'))
-                    productprice=product.price
-                    request.session['productprice'] = float(client_price)
-                    print(productprice)
+                    product.price= float(client_price)
+                    request.session['product.price']=product.price
+                    print("I love {}.".format(product.price))
                     return render(request, 'shop/product/clientsuccess.html',{
                     'form': form,
                     'product': product,

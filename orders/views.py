@@ -32,14 +32,13 @@ def order_create(request):
                 )
             cart.clear()
            
-            discount=order.get_discount(client)
-            print(discount)
+       
+      
             print(order.get_total_cost())
             total_cost = order.get_total_cost()
         return render(request, 'orders/order/created.html', {
             'order': order,
             'total_cost': total_cost ,
-            'discount':  discount,
             'local_css_urls': ["css3/easy-responsive-tabs.css",
                             "css3/material-kit.min1036.css",
                             "css3/demo.css",

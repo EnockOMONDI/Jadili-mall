@@ -54,6 +54,7 @@
               <tbody>
                     {% for item in cart %}
                     {% with product=item.product  %}
+      
                 <tr>
                   <td>
                     <div class="img-container">
@@ -75,11 +76,12 @@
                   <td>
                     M
                   </td>
+                  {% with item.price as product.price %}
                   <td class="td-number text-right">
-                    <small>KSH</small> <strong class="text-muted">{{ item.price }}</strong>
+                    <small>KSH</small> <strong class="text-muted">{{ item.price}}</strong>
                   </td>
                   <td class="td-name">
-             
+                 {% endwith %}
                     <div class="btn-group btn-group-sm">
                             <form action="{% url "cart:cart_add" product.id %}" method="post">
                                     {% csrf_token %}
