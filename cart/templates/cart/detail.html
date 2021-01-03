@@ -27,8 +27,8 @@
               
           <h4 class="card-title"><strong class="text-muted">Hey {{request.user.first_name }}, your shopping Cart has:</strong> {{ totail_items }} item {{ totail_items|pluralize }}, KSH {{ cart.get_total_price }}  </h4>
           <button type="button" class="btn btn-link ">
-                <a href="{% url 'shop:product_list' %}"> Continue  Shopping <i class="material-icons">keyboard_arrow_right</i>  </a> 
-            </button>
+            <button class="btn btn-white btn-lg " > <a  href="{% url 'shop:product_list' %}" > Continue Shopping </a></button>
+          </button>
           {% else %}
           <h4 class="card-title" > <strong class="text-muted" >Hey :-( ,{{request.user.first_name }} your cart is empty </strong></h4>
           <button type="button" class="btn btn-link ">
@@ -112,7 +112,12 @@
                           
                   </td>
                   <td colspan="1"></td>
-                  <td colspan="2" class="text-right">
+                  <td class="td-actions">
+                    <button class="btn btn-white btn-lg " > <a  href="{% url 'shop:product_list' %}" > Continue Shopping </a></button>
+                        
+                 
+                  </td>
+                  <td class="td-actions">
                         <a href="{% url "orders:order_create" %}" class="btn btn-info btn-round" >Complete Order <i class="material-icons">keyboard_arrow_right</i></a>
                  
                   </td>
@@ -131,6 +136,10 @@
       </div>
     </div>
   </div>
+</div>
+</div>
+
+
 </div>
 </div>
 

@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from pyuploadcare.dj.models import ImageField
+from taggit.managers import TaggableManager
 
 
 
@@ -85,6 +86,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = ImageField(blank=True, null=True, manual_crop="4:4",)
+    tags = TaggableManager()
 
     class Meta:
         ordering = ('name', )

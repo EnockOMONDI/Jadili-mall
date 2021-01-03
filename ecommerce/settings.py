@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites', # new
-    # 'mptt',
+    'django.contrib.sites', 
+    'taggit',
     'registration',
     'login',
     'account',
