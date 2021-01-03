@@ -521,7 +521,10 @@ def client_price(request, id, slug):
     client = Client.objects.get(user=request.user)
     cart_product_form = CartAddProductForm()
     product_tags_ids = Product.tags.values_list('id', flat=True)
-    similar_products = Product.objects.filter(tags__in=product_tags_ids)
+    similar_products = Product.objects.filter(tags__in=product_tags_ids)\
+    .exclude(id=product.id)
+    similar_products = similar_products.annotate(same_tags=Count('tags'))\
+    .order_by('-same_tags','-created_at')[:6]
     if request.method == 'POST':
             # create a form instance and populate it with data from the request:
         form = NegotiateForm(request.POST)
