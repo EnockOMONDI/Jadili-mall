@@ -517,6 +517,8 @@ def client_price(request, id, slug):
     product = Product.objects.get(id=id, slug=slug )
     client = Client.objects.get(user=request.user)
     cart_product_form = CartAddProductForm()
+    product_tags_ids = Product.tags.values_list('id', flat=True)
+    similar_products = Product.objects.filter(tags__in=product_tags_ids)
     if request.method == 'POST':
             # create a form instance and populate it with data from the request:
         form = NegotiateForm(request.POST)
@@ -547,6 +549,9 @@ def client_price(request, id, slug):
                     'product': product,
                     'cart_product_form': cart_product_form,
                     'client_price':client_price,
+                    'product_tags_ids':product_tags_ids,
+                    'similar_products':similar_products,
+ 
                     'local_css_urls': ["css3/easy-responsive-tabs.css",
                                     "css3/material-kit.min1036.css",
                                     "css3/demo.css",
@@ -581,6 +586,8 @@ def client_price(request, id, slug):
                     'product': product,
                     'cart_product_form': cart_product_form,
                     'client_price':client_price,
+                    'product_tags_ids':product_tags_ids,
+                     'similar_products':similar_products,
                     'local_css_urls': ["css3/easy-responsive-tabs.css",
                                     "css3/material-kit.min1036.css",
                                     "css3/demo.css",
@@ -611,6 +618,8 @@ def client_price(request, id, slug):
             'product': product,
             'cart_product_form': cart_product_form,
             'client_price':client_price,
+            'product_tags_ids':product_tags_ids,
+            'similar_products':similar_products,
             'local_css_urls': ["css3/easy-responsive-tabs.css",
                             "css3/material-kit.min1036.css",
                             "css3/demo.css",
@@ -645,6 +654,8 @@ def client_price(request, id, slug):
         return render(request, 'shop/product/client.html', {
         'form': form,
         'product': product,
+        'product_tags_ids':product_tags_ids,
+        'similar_products':similar_products,
         'local_css_urls': ["css3/easy-responsive-tabs.css",
                             "css3/material-kit.min1036.css",
                             "css3/demo.css",

@@ -116,9 +116,64 @@
   
           </div>
         </div>
-
-
+   
     </div>
+    <div class="col-md-8 ml-auto mr-auto text-center">
+      <h2 class="title text-muted">Hey {{request.user.first_name }} check out this {{similar_products.count}}  Similar Products that might Interest You </h2>
+      </div>
+    <div class="row">
+      {% if similar_products %}
+      {% for similar in similar_products%}  
+      <div class="col-12 col-md-6 col-lg-3">
+  
+  
+          <div class="card  ">
+              <div class="card-header card-header-image">
+                <a href="{{ product.get_absolute_url }}">
+                  <img class="img" href="{{ product.get_absolute_url }}" src="{% if product.image %} {{ product.image.cdn_url }} {% else %} {% static 'img/default.png' %} {% endif %}" >
+                </a>
+              </div>
+              <div class="card-body text-center  " style="color:rgb(235, 235, 235)">
+                <h6 class="card-category text-success">
+                  <i class="material-icons">trending_up</i> Trending
+                </h6>
+                <h4 class="card-title">
+                    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                </h4>
+                <div class="description  ">
+                    <h4 class="info-title ">KSH {{ product.price }}</h4> 
+                </div>
+                <a href="{{ product.get_absolute_url }}" >
+                    <i class="material-icons">explore</i> Quick view
+                  </a>
+                  <div>
+                      <a  href="{% url 'shop:client_price' id=product.id  slug=product.slug %}"><input style="background-color:#FD8C04" type="submit" name="submit" value="Negotiate price" class="btn  btn-primary  btn-round btn-sm" />
+  
+                          <a  href="{{ product.get_absolute_url }}"><input  type="submit" name="submit" value="Add to cart" class="btn  btn-primary  btn-round btn-sm" /> 
+                            
+                  </div>
+      
+                  </a>
+      
+          </div>
+       
+                 
+   
+    </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      
+              <div class="col-md-8 ml-auto mr-auto text-center">
+                      <div class="card card-pricing card-plain">
+                              <div class="card-body " style="background-color: rgb(255, 255, 255)">
+                <h2 class="title">Bummer No Similar products found in  Category</h2>
+                               
+              </div>
+          </div>
+              </div>
+            </div>
+            {% endif %}
   </div>
 
 
