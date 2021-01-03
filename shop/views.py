@@ -101,7 +101,7 @@ def product_detail(request, id, slug):
     client = Client.objects.get(user=request.user)
     cart_product_form = CartAddProductForm()
     product_tags_ids = Product.tags.values_list('id', flat=True)
-    similar_products = Product.objects.filter(tags__in=product_tags_ids)
+    similar_products = Product.objects.filter(tags__in=product_tags_ids).distinct()
     context = {
         'product': product,
         'client':client,
