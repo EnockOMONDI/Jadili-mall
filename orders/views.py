@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import OrderItem
+from decimal import Decimal
+from shop.models import Product
 from .forms import OrderCreateForm
 from cart.cart import Cart
 from account.models import Client
@@ -30,16 +32,25 @@ def order_create(request):
                     price=item['price'],
                     quantity=item['quantity']
                 )
-            cart.clear()
            
-            discount=order.get_discount(client)
-            print(discount)
+            
+            cart.clear()
+            
+       
+      
             print(order.get_total_cost())
             total_cost = order.get_total_cost()
+            product_id=request.session.get('product_id')
+            product =Product.objects.get(id=product_id)
+            product_price=request.session['intial_product_price']
+            product.price=Decimal(product_price)
+            print(product.price)
+            product.save()
+            
+            
         return render(request, 'orders/order/created.html', {
             'order': order,
             'total_cost': total_cost ,
-            'discount':  discount,
             'local_css_urls': ["css3/easy-responsive-tabs.css",
                             "css3/material-kit.min1036.css",
                             "css3/demo.css",

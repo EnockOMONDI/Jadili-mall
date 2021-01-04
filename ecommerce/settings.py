@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites', 
+    'django.contrib.sites', # new
     'taggit',
     'registration',
     'login',
@@ -164,9 +164,10 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/products/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'products/')
 
-CART_SESSION_ID = 'cart'
-SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_HTTPONLY = True
+CART_SESSION_ID = 'cart'
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")

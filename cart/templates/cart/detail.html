@@ -28,7 +28,7 @@
           <h4 class="card-title"><strong class="text-muted">Hey {{request.user.first_name }}, your shopping Cart has:</strong> {{ totail_items }} item {{ totail_items|pluralize }}, KSH {{ cart.get_total_price }}  </h4>
           <button type="button" class="btn btn-link ">
             <button class="btn btn-white btn-lg " > <a  href="{% url 'shop:product_list' %}" > Continue Shopping </a></button>
-          </button>
+            </button>
           {% else %}
           <h4 class="card-title" > <strong class="text-muted" >Hey :-( ,{{request.user.first_name }} your cart is empty </strong></h4>
           <button type="button" class="btn btn-link ">
@@ -54,6 +54,7 @@
               <tbody>
                     {% for item in cart %}
                     {% with product=item.product  %}
+      
                 <tr>
                   <td>
                     <div class="img-container">
@@ -75,25 +76,24 @@
                   <td>
                     M
                   </td>
+                  {% with item.price as product.price %}
                   <td class="td-number text-right">
-                    <small>KSH</small> <strong class="text-muted">{{ item.price }}</strong>
+                    <small>KSH</small> <strong class="text-muted">{{ item.price}}</strong>
                   </td>
-                  <td class="td-name">
-             
-                    <div class="btn-group btn-group-sm">
-                            <form action="{% url "cart:cart_add" product.id %}" method="post">
-                                    {% csrf_token %}
-                                    {{ item.update_quantity_form.quantity }}
-                                      {{ item.update_quantity_form.update }}
-                                    <input type="submit" value="Update item" class="btn btn-info btn-round" >
-                                </form>
-                      <!-- <button class="btn btn-round btn-info"> <i class="material-icons">remove</i> </button>
-                      <button class="btn btn-round btn-info"> <i class="material-icons">add</i> </button> -->
-                    </div>
+                  {% with totail_items=cart|length %}
+                 
+                  <td class="td-nametext-right">
+                     <strong class="text-muted">{{ totail_items }} item {{ totail_items|pluralize }}</strong>
+
+                    
                   </td>
+                  {% endwith %}
+                 
+
                   <td class="td-number">
                     <small>KSH</small> <strong class="text-muted">{{ item.total_price }}</strong> 
                   </td>
+                  {% endwith %}
                   <td class="td-actions">
                     <button type="button" rel="tooltip" data-placement="left" title="Remove item" class="btn btn-link">
 <a href="{% url "cart:cart_remove" product.id %}">Remove Item  <i class="material-icons">close</i>  </a>  
@@ -136,10 +136,6 @@
       </div>
     </div>
   </div>
-</div>
-</div>
-
-
 </div>
 </div>
 

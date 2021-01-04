@@ -7,7 +7,6 @@ from django.contrib import messages
 from account.models import Client
 from django.db.models import Count
 
-
 @login_required(login_url ='login:login_redirect')
 def product_list(request, category_slug=None):
     category = None
@@ -112,6 +111,7 @@ def product_detail(request, id, slug):
         'similar_products':similar_products,
         'cart_product_form': cart_product_form
     }
+  
     return render(request, 'shop/product/detail.html',
                   context={
                       'product': product,
@@ -518,6 +518,7 @@ def womens(request):
 
 def client_price(request, id, slug):
     product = Product.objects.get(id=id, slug=slug )
+    request.session['intial_product_price']=str(product.price)
     client = Client.objects.get(user=request.user)
     cart_product_form = CartAddProductForm()
     product_tags_ids = Product.tags.values_list('id', flat=True)
@@ -533,7 +534,7 @@ def client_price(request, id, slug):
 
                 # process the data in form.cleaned_data as required
             client_price=form.cleaned_data['client_price']
-            request.session['client_price'] = client_price
+            request.session['client_price'] = request.POST['client_price']
         if client.has_discount:
                 if float(client_price) < product.reject_price:
                     messages.success(request, ('Sorry! thats offer is so low kindly add amount ' ))
@@ -547,9 +548,13 @@ def client_price(request, id, slug):
 
                 elif float(client_price) >= product.maximum_price_offer and float(client_price) < product.price :
                     messages.success(request, (' hey I accept this offer'))
-                    productprice=product.price
-                    request.session['productprice'] = float(client_price)
-                    print(productprice)
+                    request.session['product_id']=product.id
+                    product.price = float(client_price)
+                    print(product.price)
+                    request.session['product.price']=product.price
+                    request.session.modified=True
+                    print(product.price)
+                    print("I love {}.".format(product.price))
                     return render(request, 'shop/product/clientsuccess.html',{
                     'form': form,
                     'product': product,
@@ -557,7 +562,6 @@ def client_price(request, id, slug):
                     'client_price':client_price,
                     'product_tags_ids':product_tags_ids,
                     'similar_products':similar_products,
- 
                     'local_css_urls': ["css3/easy-responsive-tabs.css",
                                     "css3/material-kit.min1036.css",
                                     "css3/demo.css",
@@ -584,16 +588,18 @@ def client_price(request, id, slug):
 
                 elif float(client_price) >= product.price :
                     messages.success(request, (' hey I accept this offer, thank you for the TIP'))
-                    productprice=product.price
-                    request.session['productprice'] = float(client_price)
-                    print(productprice)
+                    request.session['product_id']=product.id
+                    product.price= float(client_price)
+                    request.session['product.price']=product.price
+                    request.session.modified=True
+                    print("I love {}.".format(product.price))
                     return render(request, 'shop/product/clientsuccess.html',{
                     'form': form,
                     'product': product,
                     'cart_product_form': cart_product_form,
                     'client_price':client_price,
                     'product_tags_ids':product_tags_ids,
-                     'similar_products':similar_products,
+                    'similar_products':similar_products,
                     'local_css_urls': ["css3/easy-responsive-tabs.css",
                                     "css3/material-kit.min1036.css",
                                     "css3/demo.css",
@@ -620,7 +626,7 @@ def client_price(request, id, slug):
                 messages.info(
                     request, ('Unfortunately ou are not eligible for any loan!'))
         return render(request, 'shop/product/client.html',{
-            'form': form,
+             'form': form,
             'product': product,
             'cart_product_form': cart_product_form,
             'client_price':client_price,

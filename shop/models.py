@@ -87,13 +87,17 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     image = ImageField(blank=True, null=True, manual_crop="4:4",)
     tags = TaggableManager()
-
     class Meta:
         ordering = ('name', )
         index_together = (('id', 'slug'),)
 
     def __str__(self):
         return self.name
+    @property
+    def original_price(self,request):
+    	
+    	return self.price 
+    	
 
     def get_absolute_url(self):
         return reverse('shop:product_detail', args=[self.id, self.slug])

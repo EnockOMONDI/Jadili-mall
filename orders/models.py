@@ -24,8 +24,8 @@ class Order(models.Model):
         return 'Order {}'.format(self.id)
 
     def get_total_cost(self):
-        total=sum(item.get_cost() for item in self.items.all()) 
-        return (float(total)-self.discount)
+        
+        return sum(item.get_cost() for item in self.items.all()) 
 
     def get_discount(self, client):
         total = float(self.get_total_cost())
